@@ -1,0 +1,65 @@
+version: 1.0.0
+
+domains:
+  uuid: CHAR(32)
+
+# https://github.com/matsuyoido/gradle-ER-plugin
+tables:
+  user:
+    logicalName: ユーザー
+    info: システムを利用するためのユーザー
+    columns:
+      id:
+        logicalName: ユーザーID
+        info: ユーザーID
+        type: uuid
+        options: NOT NULL
+      employee_no:
+        logicalName: 社員番号
+        type: VARCHAR(16)
+        options: NOT NULL
+      name:
+        logiclName: ユーザー名
+        info: ユーザー名
+        type: VARCHAR(64)
+        options: NOT NULL
+      gender:
+        logiclName: 性別
+        info: 性別
+        type: CHAR(1)
+        options: NOT NULL
+      mail:
+        logiclName: メールアドレス
+        info: メールアドレス
+        type: VARCHAR(255)
+        options: NOT NULL
+      password:
+        logiclName: パスワード
+        info: パスワード
+        type: VARCHAR(255)
+        options: NOT NULL
+      created_at:
+        logiclName: 作成日時
+        info: 作成日時
+        type: DATETIME
+      created_by:
+        logiclName: 作成者
+        info: 作成者
+        type: uuid
+      updated_at:
+        logiclName: 更新日時
+        info: 更新日時
+        type: DATETIME
+      updated_by:
+        logiclName: 更新者
+        info: 更新者
+        type: uuid
+      is_deleted:
+        logiclName: 削除フラグ
+        info: 削除フラグ
+        type: BYTE(1)
+      pk:
+        - id
+      uq:
+        uk_employee_no:
+          - employee_no
