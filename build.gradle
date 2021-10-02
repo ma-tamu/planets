@@ -2,24 +2,20 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url "https://plugins.gradle.org/m2/" }
+        gradlePluginPortal()
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:2.5.5"
         classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
+        classpath "gradle.plugin.org.seasar.doma:codegen:1.4.1"
+        classpath "mysql:mysql-connector-java:8.0.25"
     }
 }
-
-//plugins {
-//    id 'org.springframework.boot' version '2.5.5'
-//    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-//    id 'java'
-//    id 'eclipse'
-//    id 'idea'
-//}
 
 allprojects {
     repositories {
         mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
 }
 
@@ -36,14 +32,42 @@ subprojects {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 
+    repositories {
+        mavenCentral()
+    }
+
     configurations {
+        developmentOnly
+        runtimeClasspath {
+            extendsFrom developmentOnly
+        }
         compileOnly {
             extendsFrom annotationProcessor
         }
     }
 
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:2.5.5"
+            mavenBom "org.junit:junit-bom:5.8.1"
+        }
+    }
+    ext {
+        datasourceHost = System.getenv("MYSQL_HOST") ?: "localhost"
+        datasourcePort = System.getenv("MYSQL_PORT") ?: "3306"
+        datasourceUsername = System.getenv("MYSQL_USER_NAME") ?: "planet"
+        datasourcePassowrd = System.getenv("MYSQL_USER_PASSWORD") ?: "planet"
+        datasourceSchema = System.getenv("MYSQL_SCHEMA") ?: "planet"
+        datasourceUrl = "jdbc:mysql://$datasourceHost:$datasourcePort/$datasourceSchema?useSSL=false&allowPublicKeyRetrieval=true"
+    }
+
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter'
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+        implementation 'org.apache.commons:commons-lang3:3.12.0'
+        implementation 'org.apache.commons:commons-collections4:4.4'
+        implementation 'com.google.guava:guava:31.0-jre'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'com.tngtech.archunit:archunit-junit5:0.21.0'
     }
