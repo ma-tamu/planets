@@ -9,6 +9,7 @@ buildscript {
         classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
         classpath "gradle.plugin.org.seasar.doma:codegen:1.4.1"
         classpath "mysql:mysql-connector-java:8.0.25"
+        classpath "org.flywaydb:flyway-gradle-plugin:7.15.0"
     }
 }
 
@@ -26,11 +27,15 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'eclipse'
     apply plugin: 'idea'
+    apply plugin: 'org.flywaydb.flyway'
 
     group = 'jp.co.project.planets'
     version = '0.0.1-SNAPSHOT'
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+
+    [compileJava, compileTestJava]*.options*.encoding = "UTF-8"
+    [compileJava, compileTestJava]*.options*.compilerArgs = ["-Xlint:all,-options,-processing,-path"]
 
     repositories {
         mavenCentral()
@@ -64,6 +69,7 @@ subprojects {
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter'
         developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
         implementation 'org.apache.commons:commons-lang3:3.12.0'
         implementation 'org.apache.commons:commons-collections4:4.4'

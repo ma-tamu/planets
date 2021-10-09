@@ -48,14 +48,17 @@ CREATE TABLE sub_office
 
 CREATE TABLE work_time
 (
-  `id`         char(32) NOT NULL COMMENT 'id',
-  `work_date`  date     NOT NULL COMMENT '年月日',
-  `start_at`   time     NOT NULL COMMENT '始業時間',
-  `end_at`     time     NOT NULL COMMENT '終業時間',
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日',
-  `created_by` char(32) NOT NULL COMMENT '作成者',
-  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE current_timestamp COMMENT '更新日',
-  `update_by`  char(32) NOT NULL COMMENT '更新者',
-  `is_deleted` bit(1)   NOT NULL DEFAULT b'0' COMMENT '削除フラグ',
+  `id`                             char(32) NOT NULL COMMENT 'id',
+  `work_date`                      date     NOT NULL COMMENT '年月日',
+  `start_time`                     time     NOT NULL COMMENT '始業時間',
+  `end_time`                       time     NOT NULL COMMENT '終業時間',
+  `official_working_time`          time NULL COMMENT '所定内通常勤務',
+  `official_midnight_working_time` time NULL COMMENT '所定内深夜勤務',
+  `official_break_time`            time NULL COMMENT '所定内休憩勤務',
+  `created_at`                     datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日',
+  `created_by`                     char(32) NOT NULL COMMENT '作成者',
+  `updated_at`                     datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE current_timestamp COMMENT '更新日',
+  `update_by`                      char(32) NOT NULL COMMENT '更新者',
+  `is_deleted`                     bit(1)   NOT NULL DEFAULT b'0' COMMENT '削除フラグ',
   PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT '作業時間';

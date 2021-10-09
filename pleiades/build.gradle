@@ -1,4 +1,7 @@
-
+// JavaクラスとSQLファイルの出力先ディレクトリを同じにする
+processResources.destinationDir = compileJava.destinationDir
+// コンパイルより前にSQLファイルを出力先ディレクトリにコピーするために依存関係を逆転する
+compileJava.dependsOn processResources
 
 dependencies {
     implementation 'org.flywaydb:flyway-core:7.14.1'
@@ -8,3 +11,4 @@ dependencies {
 
 apply plugin: "org.seasar.doma.codegen"
 apply from: "$rootDir/domagen.gradle"
+apply from: "$rootDir/flyway.gradle"

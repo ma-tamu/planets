@@ -19,12 +19,19 @@ spring:
       auto-commit: false
       connection-test-query: SELECT 1
       maximum-pool-size: 10
+  flyway:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    user: ${earthly.datasource.name}
+    password: ${earthly.datasource.passowrd}
+    url: ${earthly.datasource.url}
+    schemas: ${earthly.datasource.schema}
+
 
 earthly:
   datasource:
     host: ${MYSQL_HOST:localhost}
     port: ${MYSQL_PORT:3306}
-    name: ${MYSQL_USER_NAME:planets}
-    passowrd: ${MYSQL_USER_PASSWORD:planets}
-    schema: ${MYSQL_SCHEMA:planets}
-    url: jdbc:mysql:${earthly.datasource.host}:${earthly.datasource.port}/${earthly.datasource.schema}?useSSL=false
+    name: ${MYSQL_USER_NAME:planet}
+    passowrd: ${MYSQL_USER_PASSWORD:planet}
+    schema: ${MYSQL_SCHEMA:planet}
+    url: jdbc:mysql://${earthly.datasource.host}:${earthly.datasource.port}/${earthly.datasource.schema}?allowPublicKeyRetrieval=true&useSSL=false

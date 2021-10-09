@@ -1,0 +1,16 @@
+domaCodeGen {
+    dev {
+        url = datasourceUrl
+        user = datasourceUsername
+        password = datasourcePassowrd
+        schemaName = datasourceSchema
+        templateDir = file("$rootDir/template")
+        entity {
+            packageName = 'jp.co.project.planets.pleiades.db.entity'
+        }
+        dao {
+            packageName = 'jp.co.project.planets.pleiades.db.dao.base'
+            suffix = 'BaseDao'
+        }
+    }
+}

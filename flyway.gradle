@@ -1,0 +1,6 @@
+flyway {
+    url = datasourceUrl
+    user = datasourceUsername
+    password = datasourcePassowrd
+    table = "planet_version"
+}
