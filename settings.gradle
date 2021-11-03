@@ -1,3 +1,4 @@
 rootProject.name = 'planets'
 include 'pleiades'
+include 'moon'
 include 'earthly'

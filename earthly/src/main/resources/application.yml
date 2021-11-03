@@ -25,6 +25,7 @@ spring:
     password: ${earthly.datasource.passowrd}
     url: ${earthly.datasource.url}
     schemas: ${earthly.datasource.schema}
+    table: planets_version
 
 
 earthly:
