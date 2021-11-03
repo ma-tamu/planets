@@ -17,7 +17,7 @@ import org.seasar.doma.jdbc.dialect.Dialect;
 /**
  * 
  */
-public class UserDaoTest {
+public class OauthClientBaseDaoTest {
 
     /** */
     protected SqlFileRepository repository;
@@ -84,8 +84,8 @@ public class UserDaoTest {
      * @throws Exception
      */
     @Test
-    public void testSelectByLoginId(TestInfo testInfo) throws Exception {
-        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/pleiades/db/dao/UserDao/selectByLoginId.sql", dialect);
+    public void testSelectById(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/pleiades/db/dao/base/OauthClientBaseDao/selectById.sql", dialect);
         execute(sqlFile);
     }
 

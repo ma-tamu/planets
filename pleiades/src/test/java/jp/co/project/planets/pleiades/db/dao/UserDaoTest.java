@@ -1,4 +1,4 @@
-package jp.co.project.planets.pleiades.db.dao.base;
+package jp.co.project.planets.pleiades.db.dao;
 
 import java.sql.Connection;
 import java.sql.Driver;

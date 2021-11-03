@@ -10,7 +10,7 @@ import org.seasar.doma.Table;
 /**
  * 
  */
-@Entity(listener = PlanetVersionListener.class, metamodel = @Metamodel)
+@Entity(listener = PlanetVersionListener.class )
 @Table(name = "planet_version")
 public class PlanetVersion extends AbstractPlanetVersion implements java.io.Serializable {
 

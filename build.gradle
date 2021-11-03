@@ -8,6 +8,7 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:2.5.5"
         classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
         classpath "gradle.plugin.org.seasar.doma:codegen:1.4.1"
+        classpath "gradle.plugin.org.seasar.doma:compile:1.1.0"
         classpath "mysql:mysql-connector-java:8.0.25"
         classpath "org.flywaydb:flyway-gradle-plugin:7.15.0"
     }
@@ -29,6 +30,7 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'org.flywaydb.flyway'
 
+    idea.module.inheritOutputDirs = true
     group = 'jp.co.project.planets'
     version = '0.0.1-SNAPSHOT'
     sourceCompatibility = JavaVersion.VERSION_17

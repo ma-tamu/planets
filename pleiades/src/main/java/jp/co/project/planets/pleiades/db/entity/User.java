@@ -10,7 +10,7 @@ import org.seasar.doma.Table;
 /**
  * ユーザー
  */
-@Entity(listener = UserListener.class, metamodel = @Metamodel)
+@Entity(listener = UserListener.class )
 @Table(name = "user")
 public class User extends AbstractUser implements java.io.Serializable {
 

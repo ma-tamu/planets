@@ -10,7 +10,7 @@ import org.seasar.doma.Table;
 /**
  * パーミッション
  */
-@Entity(listener = PermissionListener.class, metamodel = @Metamodel)
+@Entity(listener = PermissionListener.class )
 @Table(name = "permission")
 public class Permission extends AbstractPermission implements java.io.Serializable {
 

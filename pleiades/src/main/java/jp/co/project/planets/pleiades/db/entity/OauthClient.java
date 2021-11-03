@@ -8,11 +8,11 @@ import org.seasar.doma.Metamodel;
 import org.seasar.doma.Table;
 
 /**
- * 分室
+ * OAuthクライアント
  */
-@Entity(listener = SubOfficeListener.class )
-@Table(name = "sub_office")
-public class SubOffice extends AbstractSubOffice implements java.io.Serializable {
+@Entity(listener = OauthClientListener.class )
+@Table(name = "oauth_client")
+public class OauthClient extends AbstractOauthClient implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -21,21 +21,21 @@ public class SubOffice extends AbstractSubOffice implements java.io.Serializable
     @Column(name = "id")
     String id;
 
-    /** 名前 */
+    /** OAuthクライアント名 */
     @Column(name = "name")
     String name;
 
-    /** オフィス */
-    @Column(name = "office_id")
-    String officeId;
+    /** クライアントID */
+    @Column(name = "client_id")
+    String clientId;
 
-    /** 部門コード */
-    @Column(name = "department_code")
-    String departmentCode;
+    /** クライアントシークレット */
+    @Column(name = "client_secret")
+    String clientSecret;
 
-    /** 所属コード */
-    @Column(name = "belong_code")
-    String belongCode;
+    /** スコープ */
+    @Column(name = "scope")
+    String scope;
 
     /** 作成日 */
     @Column(name = "created_at")
@@ -94,57 +94,57 @@ public class SubOffice extends AbstractSubOffice implements java.io.Serializable
     }
 
     /** 
-     * Returns the officeId.
+     * Returns the clientId.
      * 
-     * @return the officeId
+     * @return the clientId
      */
-    public String getOfficeId() {
-        return officeId;
+    public String getClientId() {
+        return clientId;
     }
 
     /** 
-     * Sets the officeId.
+     * Sets the clientId.
      * 
-     * @param officeId the officeId
+     * @param clientId the clientId
      */
-    public void setOfficeId(String officeId) {
-        this.officeId = officeId;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     /** 
-     * Returns the departmentCode.
+     * Returns the clientSecret.
      * 
-     * @return the departmentCode
+     * @return the clientSecret
      */
-    public String getDepartmentCode() {
-        return departmentCode;
+    public String getClientSecret() {
+        return clientSecret;
     }
 
     /** 
-     * Sets the departmentCode.
+     * Sets the clientSecret.
      * 
-     * @param departmentCode the departmentCode
+     * @param clientSecret the clientSecret
      */
-    public void setDepartmentCode(String departmentCode) {
-        this.departmentCode = departmentCode;
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
     }
 
     /** 
-     * Returns the belongCode.
+     * Returns the scope.
      * 
-     * @return the belongCode
+     * @return the scope
      */
-    public String getBelongCode() {
-        return belongCode;
+    public String getScope() {
+        return scope;
     }
 
     /** 
-     * Sets the belongCode.
+     * Sets the scope.
      * 
-     * @param belongCode the belongCode
+     * @param scope the scope
      */
-    public void setBelongCode(String belongCode) {
-        this.belongCode = belongCode;
+    public void setScope(String scope) {
+        this.scope = scope;
     }
 
     /** 

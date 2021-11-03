@@ -10,7 +10,7 @@ import org.seasar.doma.Table;
 /**
  * オフィス
  */
-@Entity(listener = OfficeListener.class, metamodel = @Metamodel)
+@Entity(listener = OfficeListener.class )
 @Table(name = "office")
 public class Office extends AbstractOffice implements java.io.Serializable {
 

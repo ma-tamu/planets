@@ -12,7 +12,7 @@ import org.seasar.doma.Table;
 /**
  * 作業時間
  */
-@Entity(listener = WorkTimeListener.class, metamodel = @Metamodel)
+@Entity(listener = WorkTimeListener.class )
 @Table(name = "work_time")
 public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
 
