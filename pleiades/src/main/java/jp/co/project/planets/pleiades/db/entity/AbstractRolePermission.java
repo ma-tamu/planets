@@ -3,5 +3,5 @@ package jp.co.project.planets.pleiades.db.entity;
 
 /**
  */
-public abstract class AbstractRolePermission implements Serializable {
+public abstract class AbstractRolePermission {
 }

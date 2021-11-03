@@ -1,5 +1,6 @@
-package jp.co.project.planets.pleiades.db.dao.base;
+package jp.co.project.planets.pleiades.db.dao;
 
+import jp.co.project.planets.pleiades.db.dao.base.UserBaseDao;
 import jp.co.project.planets.pleiades.db.entity.User;
 import org.seasar.doma.Dao;
 import org.seasar.doma.Select;

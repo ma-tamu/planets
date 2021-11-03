@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class UserDetailDto implements UserDetails {
 
+    private static final long serialVersionUID = 1L;
+
     /** ユーザーID */
     private final String id;
 

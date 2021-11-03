@@ -3,5 +3,5 @@ package jp.co.project.planets.pleiades.db.entity;
 
 /**
  */
-public abstract class AbstractWorkTime implements Serializable {
+public abstract class AbstractWorkTime {
 }

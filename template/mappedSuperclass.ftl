@@ -16,5 +16,5 @@ import ${importName};
  * @author ${lib.author}
 </#if>
  */
-public abstract class ${simpleName}<#if superclassSimpleName??> extends ${superclassSimpleName}</#if> implements Serializable {
+public abstract class ${simpleName}<#if superclassSimpleName??> extends ${superclassSimpleName}</#if> {
 }

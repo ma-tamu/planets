@@ -12,7 +12,9 @@ import org.seasar.doma.Table;
  */
 @Entity(listener = SubOfficeListener.class, metamodel = @Metamodel)
 @Table(name = "sub_office")
-public class SubOffice extends AbstractSubOffice {
+public class SubOffice extends AbstractSubOffice implements java.io.Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** id */
     @Id

@@ -7,6 +7,7 @@ domaCodeGen {
         templateDir = file("$rootDir/template")
         entity {
             packageName = 'jp.co.project.planets.pleiades.db.entity'
+            overwriteListener = true
         }
         dao {
             packageName = 'jp.co.project.planets.pleiades.db.dao.base'

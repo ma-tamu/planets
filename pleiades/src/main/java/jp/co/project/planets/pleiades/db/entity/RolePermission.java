@@ -12,7 +12,9 @@ import org.seasar.doma.Table;
  */
 @Entity(listener = RolePermissionListener.class, metamodel = @Metamodel)
 @Table(name = "role_permission")
-public class RolePermission extends AbstractRolePermission {
+public class RolePermission extends AbstractRolePermission implements java.io.Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** id */
     @Id

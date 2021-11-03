@@ -12,7 +12,9 @@ import org.seasar.doma.Table;
  */
 @Entity(listener = UserListener.class, metamodel = @Metamodel)
 @Table(name = "user")
-public class User extends AbstractUser {
+public class User extends AbstractUser implements java.io.Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** id */
     @Id

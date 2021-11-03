@@ -14,7 +14,9 @@ import org.seasar.doma.Table;
  */
 @Entity(listener = WorkTimeListener.class, metamodel = @Metamodel)
 @Table(name = "work_time")
-public class WorkTime extends AbstractWorkTime {
+public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** id */
     @Id
