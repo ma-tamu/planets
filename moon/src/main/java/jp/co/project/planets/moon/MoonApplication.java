@@ -2,11 +2,12 @@ package jp.co.project.planets.moon;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * moon application
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "jp.co.project.planets.pleiades")
 public class MoonApplication {
 
     /**

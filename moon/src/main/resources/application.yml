@@ -1,3 +1,40 @@
-management:
-  server:
-    port: 9000
+server:
+  port: 9000
+
+logging:
+  level:
+    root: debug
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    name: ${moon.datasource.name}
+    password: ${moon.datasource.passowrd}
+    url: ${moon.datasource.url}
+    hikari:
+      auto-commit: false
+      connection-test-query: SELECT 1
+      maximum-pool-size: 10
+      jdbc-url: ${moon.datasource.url}
+      username: ${moon.datasource.name}
+      password: ${moon.datasource.passowrd}
+  flyway:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    user: ${moon.datasource.name}
+    password: ${moon.datasource.passowrd}
+    url: ${moon.datasource.url}
+    schemas: ${moon.datasource.schema}
+    table: planets_version
+
+doma:
+  dialect: mysql
+
+moon:
+  datasource:
+    host: ${MYSQL_HOST:localhost}
+    port: ${MYSQL_PORT:3306}
+    name: ${MYSQL_USER_NAME:planet}
+    passowrd: ${MYSQL_USER_PASSWORD:planet}
+    schema: ${MYSQL_SCHEMA:planet}
+    url: jdbc:mysql://${moon.datasource.host}:${moon.datasource.port}/${moon.datasource.schema}?allowPublicKeyRetrieval=true&useSSL=false
+
