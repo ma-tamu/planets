@@ -1,7 +1,6 @@
 package jp.co.project.planets.moon.security.oauth2.client;
 
 import jp.co.project.planets.pleiades.db.dao.OAuthClientDao;
-import jp.co.project.planets.pleiades.db.dao.OAuthClientDaoImpl;
 import jp.co.project.planets.pleiades.db.dao.OauthClientRedirectUrlDao;
 import jp.co.project.planets.pleiades.db.entity.OauthClient;
 import jp.co.project.planets.pleiades.db.entity.OauthClientRedirectUrl;
@@ -11,7 +10,6 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.List;

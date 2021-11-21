@@ -2,8 +2,6 @@ package jp.co.project.planets.earthly.emuns;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import java.io.Serializable;
-
 /**
  * permission enum
  */

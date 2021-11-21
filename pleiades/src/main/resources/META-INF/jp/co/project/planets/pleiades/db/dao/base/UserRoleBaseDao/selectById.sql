@@ -1,6 +1,7 @@
 select
-  /*%expand*/*
+/*%expand*/*
 from
-  user_role
+user_role
 where
-  id = /* id */'a'
+    id = /* id */'a'
+    

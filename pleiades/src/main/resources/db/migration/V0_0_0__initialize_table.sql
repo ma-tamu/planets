@@ -150,3 +150,21 @@ CREATE TABLE oauth_client_consent
   PRIMARY KEY (`id`),
   INDEX             idx_oauth_client_id_user_id (`oauth_client_id`, `user_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT 'OAuthクライアント承認';
+
+CREATE TABLE oauth2_registered_client
+(
+  `id`                            char(32)  NOT NULL COMMENT 'id',
+  `client_id`                     char(100)  NOT NULL COMMENT 'クライアントID',
+  `client_id_issued_at`           TIMESTAMP NOT NULL COMMENT 'クライアントID発行時間',
+  `client_secret`                 char(255)  NOT NULL COMMENT 'クライアントシークレット',
+  `client_secret_expires_at`      TIMESTAMP NOT NULL COMMENT 'クライアントシークレット発行時間',
+  `client_name`                   char(255)  NOT NULL COMMENT 'クライアント名',
+  `client_authentication_methods` char(32)  NOT NULL COMMENT 'クライアント認可メソッド',
+  `authorization_grant_types`     char(32)  NOT NULL COMMENT '認可権限タイプ',
+  `redirect_uris`                 char(2048)  NOT NULL COMMENT 'リダイレクトURI',
+  `scopes`                        char(255)  NOT NULL COMMENT 'スコープ',
+  `client_settings`               char(255)  NOT NULL COMMENT 'クライアントセッティング',
+  `token_settings`                char(255)  NOT NULL COMMENT 'トークンセッティング',
+  PRIMARY KEY (`id`),
+  UNIQUE uk_client_id(`client_id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT 'OAuthクライアント登録済み';

@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import jp.co.project.planets.moon.security.oauth2.client.MoonRegisteredClientRepository;
 import jp.co.project.planets.moon.security.Jwks;
+import jp.co.project.planets.moon.security.oauth2.server.MoonOAuth2AuthorizationConsentService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -13,7 +14,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
-import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
@@ -24,13 +24,15 @@ import org.springframework.security.web.SecurityFilterChain;
 /**
  * authorization server config
  */
-@Configuration(proxyBeanMethods = false)
+@Configuration
 public class AuthorizationServerConfig {
 
     private final MoonRegisteredClientRepository moonRegisteredClientRepository;
+    private final MoonOAuth2AuthorizationConsentService moonOAuth2AuthorizationConsentService;
 
-    public AuthorizationServerConfig(MoonRegisteredClientRepository moonRegisteredClientRepository) {
+    public AuthorizationServerConfig(MoonRegisteredClientRepository moonRegisteredClientRepository, MoonOAuth2AuthorizationConsentService moonOAuth2AuthorizationConsentService) {
         this.moonRegisteredClientRepository = moonRegisteredClientRepository;
+        this.moonOAuth2AuthorizationConsentService = moonOAuth2AuthorizationConsentService;
     }
 
 
@@ -50,7 +52,6 @@ public class AuthorizationServerConfig {
 
     @Bean
     public RegisteredClientRepository registeredClientRepository(final JdbcTemplate jdbcTemplate) {
-//        return moonRegisteredClientRepository;
         return new JdbcRegisteredClientRepository(jdbcTemplate);
     }
 

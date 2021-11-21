@@ -1,14 +1,15 @@
 package jp.co.project.planets.moon.config;
 
+import jp.co.project.planets.moon.security.LoginUserDetailService;
+import jp.co.project.planets.moon.security.MoonAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * security config
@@ -16,20 +17,26 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final LoginUserDetailService loginUserDetailService;
+
+    public SecurityConfig(LoginUserDetailService loginUserDetailService) {
+        this.loginUserDetailService = loginUserDetailService;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic().disable();
         http.authorizeRequests(expressionInterceptUrlRegistry -> expressionInterceptUrlRegistry.anyRequest()
-                .authenticated()).formLogin(Customizer.withDefaults());
+                .authenticated()).formLogin(Customizer.withDefaults()).authenticationProvider(new MoonAuthenticationProvider());
     }
 
-//    @Bean
-//    public UserDetailsService users() {
-//        UserDetails user = User.withDefaultPasswordEncoder()
-//                .username("user1")
-//                .password("password")
-//                .roles("USER")
-//                .build();
-//        return new InMemoryUserDetailsManager(user);
-//    }
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return loginUserDetailService;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

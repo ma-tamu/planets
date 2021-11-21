@@ -1,6 +1,7 @@
 select
-  /*%expand*/*
+/*%expand*/*
 from
-  planets_version
+planets_version
 where
-  installed_rank = /* installedRank */1
+    installed_rank = /* installedRank */1
+    
