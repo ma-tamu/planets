@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 /**
  * moon application
  */
-@SpringBootApplication(scanBasePackages = "jp.co.project.planets.pleiades")
+@SpringBootApplication(scanBasePackages = "jp.co.project.planets")
 public class MoonApplication {
 
     /**

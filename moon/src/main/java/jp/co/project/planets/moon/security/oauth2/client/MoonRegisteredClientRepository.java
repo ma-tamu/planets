@@ -5,6 +5,7 @@ import jp.co.project.planets.pleiades.db.dao.OauthClientRedirectUrlDao;
 import jp.co.project.planets.pleiades.db.entity.OauthClient;
 import jp.co.project.planets.pleiades.db.entity.OauthClientRedirectUrl;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
@@ -19,7 +20,6 @@ import java.util.stream.Stream;
 /**
  * moon registered client repository
  */
-@Component
 public class MoonRegisteredClientRepository implements RegisteredClientRepository {
 
     private final OAuthClientDao oauthClientDao;

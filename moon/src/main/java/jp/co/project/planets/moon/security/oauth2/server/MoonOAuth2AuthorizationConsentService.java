@@ -3,6 +3,7 @@ package jp.co.project.planets.moon.security.oauth2.server;
 import jp.co.project.planets.pleiades.db.dao.OauthClientConsentDao;
 import jp.co.project.planets.pleiades.db.entity.OauthClientConsent;
 import jp.co.project.planets.pleiades.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
@@ -15,7 +16,6 @@ import java.time.ZoneOffset;
 /**
  * moon oauth2 authorization consent service
  */
-@Component
 public class MoonOAuth2AuthorizationConsentService implements OAuth2AuthorizationConsentService {
 
     private final OauthClientConsentDao oauthClientConsentDao;

@@ -161,7 +161,7 @@ CREATE TABLE oauth2_registered_client
   `client_name`                   char(255)  NOT NULL COMMENT 'クライアント名',
   `client_authentication_methods` char(32)  NOT NULL COMMENT 'クライアント認可メソッド',
   `authorization_grant_types`     char(32)  NOT NULL COMMENT '認可権限タイプ',
-  `redirect_uris`                 char(2048)  NOT NULL COMMENT 'リダイレクトURI',
+  `redirect_uris`                 char(255)  NOT NULL COMMENT 'リダイレクトURI',
   `scopes`                        char(255)  NOT NULL COMMENT 'スコープ',
   `client_settings`               char(255)  NOT NULL COMMENT 'クライアントセッティング',
   `token_settings`                char(255)  NOT NULL COMMENT 'トークンセッティング',
