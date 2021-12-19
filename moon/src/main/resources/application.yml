@@ -15,7 +15,7 @@ spring:
     password: ${moon.datasource.passowrd}
     url: ${moon.datasource.url}
     hikari:
-      auto-commit: false
+#      auto-commit: false
       connection-test-query: SELECT 1
       maximum-pool-size: 10
       jdbc-url: ${moon.datasource.url}

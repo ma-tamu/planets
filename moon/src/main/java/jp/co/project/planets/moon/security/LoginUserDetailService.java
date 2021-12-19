@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 /**
  * login user detail service
  */
-@Service
+//@Service
 public class LoginUserDetailService implements UserDetailsService {
 
     private final UserDao userDao;

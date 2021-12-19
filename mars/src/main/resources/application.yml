@@ -1,0 +1,50 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /mars
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    name: ${mars.datasource.name}
+    password: ${mars.datasource.passowrd}
+    url: ${mars.datasource.url}
+    hikari:
+      auto-commit: false
+      connection-test-query: SELECT 1
+      maximum-pool-size: 10
+      jdbc-url: ${mars.datasource.url}
+      username: ${mars.datasource.name}
+      password: ${mars.datasource.passowrd}
+  flyway:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    user: ${mars.datasource.name}
+    password: ${mars.datasource.passowrd}
+    url: ${mars.datasource.url}
+    schemas: ${mars.datasource.schema}
+    table: planets_version
+
+doma:
+  dialect: mysql
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  show-actuator: true
+
+
+mars:
+  datasource:
+    host: ${MYSQL_HOST:localhost}
+    port: ${MYSQL_PORT:3306}
+    name: ${MYSQL_USER_NAME:planet}
+    passowrd: ${MYSQL_USER_PASSWORD:planet}
+    schema: ${MYSQL_SCHEMA:planet}
+    url: jdbc:mysql://${mars.datasource.host}:${mars.datasource.port}/${mars.datasource.schema}?allowPublicKeyRetrieval=true&useSSL=false
+  oauth2:
+    url:
+      base: http://localhost:9000/moon
+      authorization: ${mars.oauth2.url.base}/oauth2/authorize
+      token: ${mars.oauth2.url.base}/oauth2/token
