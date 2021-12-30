@@ -11,6 +11,7 @@ domaCodeGen {
         }
         dao {
             packageName = 'jp.co.project.planets.pleiades.db.dao.base'
+            overwrite = true
             suffix = 'BaseDao'
         }
     }

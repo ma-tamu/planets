@@ -14,7 +14,7 @@ dependencies {
     implementation 'org.springframework.security:spring-security-web'
 
     implementation 'com.nimbusds:nimbus-jose-jwt'
-
+    implementation 'mysql:mysql-connector-java:8.0.25'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
     implementation 'org.springframework.security:spring-security-oauth2-authorization-server:0.2.0'
     implementation project(':pleiades')

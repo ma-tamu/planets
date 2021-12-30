@@ -3,5 +3,6 @@ SELECT
 FROM
   oauth_client
 WHERE
-  client_id = /* clientId */'a'
-  AND is_deleted = 0
+  oauth_client.client_id = /* clientId */'a'
+  AND oauth_client.is_deleted = 0
+

@@ -1,6 +1,5 @@
 package jp.co.project.planets.pleiades.db.entity;
 
-import java.time.LocalDateTime;
 import org.seasar.doma.Column;
 import org.seasar.doma.Entity;
 import org.seasar.doma.Id;
@@ -16,158 +15,71 @@ public class OauthClientConsent extends AbstractOauthClientConsent implements ja
 
     private static final long serialVersionUID = 1L;
 
-    /** id */
+    /**  */
     @Id
-    @Column(name = "id")
-    String id;
+    @Column(name = "registered_client_id")
+    String registeredClientId;
 
-    /** OAuthクライアントID */
-    @Column(name = "oauth_client_id")
-    String oauthClientId;
+    /**  */
+    @Id
+    @Column(name = "principal_name")
+    String principalName;
 
-    /** ユーザーID */
-    @Column(name = "user_id")
-    String userId;
-
-    /** スコープ */
-    @Column(name = "scope")
-    String scope;
-
-    /** 作成日 */
-    @Column(name = "created_at")
-    LocalDateTime createdAt;
-
-    /** 作成者 */
-    @Column(name = "created_by")
-    String createdBy;
-
-    /** 削除フラグ */
-    @Column(name = "is_deleted")
-    Boolean isDeleted;
+    /**  */
+    @Column(name = "authorities")
+    String authorities;
 
     /** 
-     * Returns the id.
+     * Returns the registeredClientId.
      * 
-     * @return the id
+     * @return the registeredClientId
      */
-    public String getId() {
-        return id;
+    public String getRegisteredClientId() {
+        return registeredClientId;
     }
 
     /** 
-     * Sets the id.
+     * Sets the registeredClientId.
      * 
-     * @param id the id
+     * @param registeredClientId the registeredClientId
      */
-    public void setId(String id) {
-        this.id = id;
+    public void setRegisteredClientId(String registeredClientId) {
+        this.registeredClientId = registeredClientId;
     }
 
     /** 
-     * Returns the oauthClientId.
+     * Returns the principalName.
      * 
-     * @return the oauthClientId
+     * @return the principalName
      */
-    public String getOauthClientId() {
-        return oauthClientId;
+    public String getPrincipalName() {
+        return principalName;
     }
 
     /** 
-     * Sets the oauthClientId.
+     * Sets the principalName.
      * 
-     * @param oauthClientId the oauthClientId
+     * @param principalName the principalName
      */
-    public void setOauthClientId(String oauthClientId) {
-        this.oauthClientId = oauthClientId;
+    public void setPrincipalName(String principalName) {
+        this.principalName = principalName;
     }
 
     /** 
-     * Returns the userId.
+     * Returns the authorities.
      * 
-     * @return the userId
+     * @return the authorities
      */
-    public String getUserId() {
-        return userId;
+    public String getAuthorities() {
+        return authorities;
     }
 
     /** 
-     * Sets the userId.
+     * Sets the authorities.
      * 
-     * @param userId the userId
+     * @param authorities the authorities
      */
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    /** 
-     * Returns the scope.
-     * 
-     * @return the scope
-     */
-    public String getScope() {
-        return scope;
-    }
-
-    /** 
-     * Sets the scope.
-     * 
-     * @param scope the scope
-     */
-    public void setScope(String scope) {
-        this.scope = scope;
-    }
-
-    /** 
-     * Returns the createdAt.
-     * 
-     * @return the createdAt
-     */
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    /** 
-     * Sets the createdAt.
-     * 
-     * @param createdAt the createdAt
-     */
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    /** 
-     * Returns the createdBy.
-     * 
-     * @return the createdBy
-     */
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    /** 
-     * Sets the createdBy.
-     * 
-     * @param createdBy the createdBy
-     */
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    /** 
-     * Returns the isDeleted.
-     * 
-     * @return the isDeleted
-     */
-    public Boolean getIsDeleted() {
-        return isDeleted;
-    }
-
-    /** 
-     * Sets the isDeleted.
-     * 
-     * @param isDeleted the isDeleted
-     */
-    public void setIsDeleted(Boolean isDeleted) {
-        this.isDeleted = isDeleted;
+    public void setAuthorities(String authorities) {
+        this.authorities = authorities;
     }
 }

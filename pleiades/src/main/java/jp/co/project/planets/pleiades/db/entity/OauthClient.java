@@ -33,10 +33,6 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
     @Column(name = "client_secret")
     String clientSecret;
 
-    /** スコープ */
-    @Column(name = "scope")
-    String scope;
-
     /** 作成日 */
     @Column(name = "created_at")
     LocalDateTime createdAt;
@@ -127,24 +123,6 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
      */
     public void setClientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
-    }
-
-    /** 
-     * Returns the scope.
-     * 
-     * @return the scope
-     */
-    public String getScope() {
-        return scope;
-    }
-
-    /** 
-     * Sets the scope.
-     * 
-     * @param scope the scope
-     */
-    public void setScope(String scope) {
-        this.scope = scope;
     }
 
     /** 

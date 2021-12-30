@@ -18,7 +18,7 @@ public class OpenApiConfig {
     public OpenAPI openAPI(@Value("${mars.oauth2.url.authorization}") final String authorizationUrl,
                            @Value("${mars.oauth2.url.token}") final String tokenUrl) {
         final var info = new Info().title("Mars API").version("v1");
-        final var authorizationCodeFlow = new OAuthFlow().authorizationUrl(authorizationUrl).tokenUrl(tokenUrl).scopes(new Scopes().addString("message.read", "message.read").addString("message.write", "message.write"));
+        final var authorizationCodeFlow = new OAuthFlow().authorizationUrl(authorizationUrl).tokenUrl(tokenUrl).scopes(new Scopes().addString("open_id", "open_id").addString("me", "me"));
         final var flows = new OAuthFlows().authorizationCode(authorizationCodeFlow);
         final var securityScheme = new SecurityScheme().type(SecurityScheme.Type.OAUTH2).flows(flows);
         final var components = new Components().addSecuritySchemes("authorization_code", securityScheme);
