@@ -20,6 +20,17 @@ public class OAuth2AuthorizationRepository {
     }
 
     /**
+     * find by primary key
+     *
+     * @param id
+     *         id
+     * @return Oauth2Authorization
+     */
+    public Oauth2Authorization findByPrimaryKey(final String id) {
+        return oauth2AuthorizationDao.selectById(id);
+    }
+
+    /**
      * insert oauth2 authorization
      *
      * @param oauth2Authorization

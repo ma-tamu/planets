@@ -55,7 +55,7 @@ public class MoonRegisteredClientRepository implements RegisteredClientRepositor
         oauthClient.grantTypes().stream().map(it -> new AuthorizationGrantType(it.getType())).forEach(builder::authorizationGrantType);
         builder.clientSecretExpiresAt(Instant.ofEpochSecond(28800));
         oauthClient.redirectUrls().forEach(builder::redirectUri);
-        builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_JWT);
+        builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST);
         return builder.build();
     }
 }
