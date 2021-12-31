@@ -47,7 +47,7 @@ public class MoonAuthorizationService implements OAuth2AuthorizationService {
         }
         final var attribute = convertHelper.convertObjectIntoJson(authorization.getAttributes());
         oauth2Authorization.setAttributes(attribute);
-        Optional.ofNullable((String)authorization.getAttribute(OAuth2ParameterNames.STATE)).ifPresent(oauth2Authorization::setState);
+        Optional.ofNullable((String) authorization.getAttribute(OAuth2ParameterNames.STATE)).ifPresent(oauth2Authorization::setState);
 
         final var oauth2AccessTokenToken = authorization.getToken(OAuth2AccessToken.class);
         if (Objects.nonNull(oauth2AccessTokenToken)) {
@@ -87,44 +87,67 @@ public class MoonAuthorizationService implements OAuth2AuthorizationService {
 
     @Override
     public OAuth2Authorization findById(String id) {
-        final var entity = oauth2AuthorizationRepository.findByPrimaryKey(id);
-        final var client = registeredClientRepository.findByClientId(entity.getRegisteredClientId());
-        final var builder = OAuth2Authorization.withRegisteredClient(client);
-        builder.id(entity.getId());
-        builder.principalName(entity.getPrincipalName());
-        if (StringUtils.isNotBlank(entity.getAccessTokenValue())) {
-            final var oauth2AccessToken = new OAuth2AccessToken( //
-                    OAuth2AccessToken.TokenType.BEARER, //
-                    entity.getAccessTokenValue(), //
-                    entity.getAccessTokenIssuedAt().toInstant(ZoneOffset.UTC), //
-                    entity.getAccessTokenExpiresAt().toInstant(ZoneOffset.UTC) //
-            );
-            builder.accessToken(oauth2AccessToken);
-        }
-        if (StringUtils.isNotBlank(entity.getRefreshTokenValue())) {
-            final var refreshToken = new OAuth2RefreshToken( //
-                    entity.getRefreshTokenValue(), //
-                    entity.getRefreshTokenIssuedAt().toInstant(ZoneOffset.UTC), //
-                    entity.getRefreshTokenExpiresAt().toInstant(ZoneOffset.UTC) //
-            );
-            builder.refreshToken(refreshToken);
-        }
-
-        if (StringUtils.isNotBlank(entity.getAuthorizationCodeValue())) {
-            final var token = new OAuth2AuthorizationCode( //
-                    entity.getAuthorizationCodeValue(), //
-                    entity.getAuthorizationCodeIssuedAt().toInstant(ZoneOffset.UTC), //
-                    entity.getAuthorizationCodeExpiresAt().toInstant(ZoneOffset.UTC) //
-            );
-            builder.token(token);
-            builder.authorizationGrantType(new AuthorizationGrantType(entity.getAuthorizationGrantType()));
-        }
-        return builder.build();
+        final var oauth2Authorization = oauth2AuthorizationRepository.findByPrimaryKey(id);
+        return generateOAuth2Authorization(oauth2Authorization);
     }
 
     @Override
     public OAuth2Authorization findByToken(String token, OAuth2TokenType tokenType) {
-        // JdbcOAuth2AuthorizationServiceを参考に
-        return null;
+
+        if (Objects.isNull(tokenType)) {
+            final var oauth2Authorization = oauth2AuthorizationRepository.findByUnknownToken(token);
+            return generateOAuth2Authorization(oauth2Authorization);
+        }
+
+        final var oauth2Authorization = switch (tokenType.getValue()) {
+            case OAuth2ParameterNames.STATE -> oauth2AuthorizationRepository.findByState(token);
+            case OAuth2ParameterNames.CODE -> oauth2AuthorizationRepository.findByCode(token);
+            case OAuth2ParameterNames.ACCESS_TOKEN -> oauth2AuthorizationRepository.findByAccessToken(token);
+            case OAuth2ParameterNames.REFRESH_TOKEN -> oauth2AuthorizationRepository.findByRefreshToken(token);
+            default -> throw new RuntimeException(String.format("unknown token. token=%s", token));
+        };
+        return generateOAuth2Authorization(oauth2Authorization);
+    }
+
+    /**
+     * OAuth2Authorizationを生成
+     *
+     * @param oauth2Authorization
+     *         oauth2 authorization
+     * @return OAuth2Authorization
+     */
+    private OAuth2Authorization generateOAuth2Authorization(final Oauth2Authorization oauth2Authorization) {
+        final var client = registeredClientRepository.findByClientId(oauth2Authorization.getRegisteredClientId());
+        final var builder = OAuth2Authorization.withRegisteredClient(client);
+        builder.id(oauth2Authorization.getId());
+        builder.principalName(oauth2Authorization.getPrincipalName());
+        if (StringUtils.isNotBlank(oauth2Authorization.getAccessTokenValue())) {
+            final var oauth2AccessToken = new OAuth2AccessToken( //
+                    OAuth2AccessToken.TokenType.BEARER, //
+                    oauth2Authorization.getAccessTokenValue(), //
+                    oauth2Authorization.getAccessTokenIssuedAt().toInstant(ZoneOffset.UTC), //
+                    oauth2Authorization.getAccessTokenExpiresAt().toInstant(ZoneOffset.UTC) //
+            );
+            builder.accessToken(oauth2AccessToken);
+        }
+        if (StringUtils.isNotBlank(oauth2Authorization.getRefreshTokenValue())) {
+            final var refreshToken = new OAuth2RefreshToken( //
+                    oauth2Authorization.getRefreshTokenValue(), //
+                    oauth2Authorization.getRefreshTokenIssuedAt().toInstant(ZoneOffset.UTC), //
+                    oauth2Authorization.getRefreshTokenExpiresAt().toInstant(ZoneOffset.UTC) //
+            );
+            builder.refreshToken(refreshToken);
+        }
+
+        if (StringUtils.isNotBlank(oauth2Authorization.getAuthorizationCodeValue())) {
+            final var token = new OAuth2AuthorizationCode( //
+                    oauth2Authorization.getAuthorizationCodeValue(), //
+                    oauth2Authorization.getAuthorizationCodeIssuedAt().toInstant(ZoneOffset.UTC), //
+                    oauth2Authorization.getAuthorizationCodeExpiresAt().toInstant(ZoneOffset.UTC) //
+            );
+            builder.token(token);
+            builder.authorizationGrantType(new AuthorizationGrantType(oauth2Authorization.getAuthorizationGrantType()));
+        }
+        return builder.build();
     }
 }

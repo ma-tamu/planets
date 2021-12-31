@@ -31,7 +31,7 @@ public class ConvertHelper {
      */
     public String convertObjectIntoJson(final Object obj) {
         try {
-            objectMapper.writeValueAsString(obj);
+            return objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("object to json convert failed.", e);
         }

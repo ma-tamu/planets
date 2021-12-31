@@ -8,12 +8,14 @@ import java.util.Collections;
 
 public class UserInfoDto implements UserDetails {
 
-    private String id;
-    private String loginId;
-    private String password;
-    private String name;
-    private boolean lockout;
-    private boolean deleted;
+    private static final long serialVersionUID = 1L;
+
+    private final String id;
+    private final String loginId;
+    private final String password;
+    private final String name;
+    private final boolean lockout;
+    private final boolean deleted;
 
     public UserInfoDto(String id, String loginId, String password, String name, boolean lockout, boolean deleted) {
         this.id = id;
