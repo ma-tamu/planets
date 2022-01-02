@@ -1,6 +1,7 @@
 package jp.co.project.planets.moon.security.oauth2.server;
 
 import jp.co.project.planets.moon.helper.ConvertHelper;
+import jp.co.project.planets.moon.utils.DateUtils;
 import jp.co.project.planets.pleiades.db.entity.Oauth2Authorization;
 import jp.co.project.planets.pleiades.repository.OAuth2AuthorizationRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -14,9 +15,10 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.OffsetDateTime;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -33,15 +35,19 @@ public class MoonAuthorizationService implements OAuth2AuthorizationService {
     }
 
     @Override
+    @Transactional
     public void save(OAuth2Authorization authorization) {
         final var oauth2Authorization = new Oauth2Authorization();
+        oauth2Authorization.setRegisteredClientId(authorization.getRegisteredClientId());
+        oauth2Authorization.setPrincipalName(authorization.getPrincipalName());
+        oauth2Authorization.setAuthorizationGrantType(authorization.getAuthorizationGrantType().getValue());
         final var authorizationCode = authorization.getToken(OAuth2AuthorizationCode.class);
         if (Objects.nonNull(authorizationCode)) {
             final var authorizationCodeToken = authorizationCode.getToken();
             oauth2Authorization.setAuthorizationGrantType(oauth2Authorization.getAuthorizationGrantType());
             oauth2Authorization.setAuthorizationCodeValue((authorizationCodeToken.getTokenValue()));
-            oauth2Authorization.setAuthorizationCodeExpiresAt(LocalDateTime.ofInstant(authorizationCodeToken.getExpiresAt(), ZoneOffset.UTC));
-            oauth2Authorization.setAuthorizationCodeIssuedAt(LocalDateTime.ofInstant(authorizationCodeToken.getIssuedAt(), ZoneOffset.UTC));
+            oauth2Authorization.setAuthorizationCodeExpiresAt(DateUtils.toLocalDateTime(authorizationCodeToken.getExpiresAt()));
+            oauth2Authorization.setAuthorizationCodeIssuedAt(DateUtils.toLocalDateTime(authorizationCodeToken.getIssuedAt()));
             final var metadataJson = convertHelper.convertObjectIntoJson(authorizationCode.getMetadata());
             oauth2Authorization.setAuthorizationCodeMetadata(metadataJson);
         }
@@ -53,8 +59,8 @@ public class MoonAuthorizationService implements OAuth2AuthorizationService {
         if (Objects.nonNull(oauth2AccessTokenToken)) {
             final var accessToken = oauth2AccessTokenToken.getToken();
             oauth2Authorization.setAccessTokenValue(accessToken.getTokenValue());
-            oauth2Authorization.setAccessTokenExpiresAt(LocalDateTime.ofInstant(accessToken.getExpiresAt(), ZoneOffset.UTC));
-            oauth2Authorization.setAccessTokenIssuedAt(LocalDateTime.ofInstant(accessToken.getIssuedAt(), ZoneOffset.UTC));
+            oauth2Authorization.setAccessTokenExpiresAt(DateUtils.toLocalDateTime(accessToken.getExpiresAt()));
+            oauth2Authorization.setAccessTokenIssuedAt(DateUtils.toLocalDateTime(accessToken.getIssuedAt()));
             final var metadataJson = convertHelper.convertObjectIntoJson(oauth2AccessTokenToken.getMetadata());
             oauth2Authorization.setAccessTokenMetadata(metadataJson);
         }
@@ -63,8 +69,8 @@ public class MoonAuthorizationService implements OAuth2AuthorizationService {
         if (Objects.nonNull(oidcIdTokenToken)) {
             final var token = oidcIdTokenToken.getToken();
             oauth2Authorization.setOidcIdTokenValue(token.getTokenValue());
-            oauth2Authorization.setOidcIdTokenExpiresAt(LocalDateTime.ofInstant(token.getExpiresAt(), ZoneOffset.UTC));
-            oauth2Authorization.setOidcIdTokenIssuedAt(LocalDateTime.ofInstant(token.getIssuedAt(), ZoneOffset.UTC));
+            oauth2Authorization.setOidcIdTokenExpiresAt(DateUtils.toLocalDateTime(token.getExpiresAt()));
+            oauth2Authorization.setOidcIdTokenIssuedAt(DateUtils.toLocalDateTime(token.getIssuedAt()));
             final var metadataJson = convertHelper.convertObjectIntoJson(oidcIdTokenToken.getMetadata());
             oauth2Authorization.setOidcIdTokenMetadata(metadataJson);
         }
@@ -72,8 +78,8 @@ public class MoonAuthorizationService implements OAuth2AuthorizationService {
         if (Objects.nonNull(refreshTokenToken)) {
             final var token = refreshTokenToken.getToken();
             oauth2Authorization.setRefreshTokenValue(token.getTokenValue());
-            oauth2Authorization.setRefreshTokenExpiresAt(LocalDateTime.ofInstant(token.getExpiresAt(), ZoneOffset.UTC));
-            oauth2Authorization.setRefreshTokenIssuedAt(LocalDateTime.ofInstant(token.getIssuedAt(), ZoneOffset.UTC));
+            oauth2Authorization.setRefreshTokenExpiresAt(DateUtils.toLocalDateTime(token.getExpiresAt()));
+            oauth2Authorization.setRefreshTokenIssuedAt(DateUtils.toLocalDateTime(token.getIssuedAt()));
             final var metadataJson = convertHelper.convertObjectIntoJson(refreshTokenToken.getMetadata());
             oauth2Authorization.setRefreshTokenMetadata(metadataJson);
         }
@@ -117,24 +123,26 @@ public class MoonAuthorizationService implements OAuth2AuthorizationService {
      * @return OAuth2Authorization
      */
     private OAuth2Authorization generateOAuth2Authorization(final Oauth2Authorization oauth2Authorization) {
-        final var client = registeredClientRepository.findByClientId(oauth2Authorization.getRegisteredClientId());
+        final var client = registeredClientRepository.findById(oauth2Authorization.getRegisteredClientId());
         final var builder = OAuth2Authorization.withRegisteredClient(client);
         builder.id(oauth2Authorization.getId());
         builder.principalName(oauth2Authorization.getPrincipalName());
+        final var map = (Map<String, Object>)convertHelper.convertJsonIntoObject(oauth2Authorization.getAttributes(), Map.class);
+        map.forEach(builder::attribute);
         if (StringUtils.isNotBlank(oauth2Authorization.getAccessTokenValue())) {
             final var oauth2AccessToken = new OAuth2AccessToken( //
                     OAuth2AccessToken.TokenType.BEARER, //
                     oauth2Authorization.getAccessTokenValue(), //
-                    oauth2Authorization.getAccessTokenIssuedAt().toInstant(ZoneOffset.UTC), //
-                    oauth2Authorization.getAccessTokenExpiresAt().toInstant(ZoneOffset.UTC) //
+                    oauth2Authorization.getAccessTokenIssuedAt().toInstant(OffsetDateTime.now().getOffset()), //
+                    oauth2Authorization.getAccessTokenExpiresAt().toInstant(OffsetDateTime.now().getOffset()) //
             );
             builder.accessToken(oauth2AccessToken);
         }
         if (StringUtils.isNotBlank(oauth2Authorization.getRefreshTokenValue())) {
             final var refreshToken = new OAuth2RefreshToken( //
                     oauth2Authorization.getRefreshTokenValue(), //
-                    oauth2Authorization.getRefreshTokenIssuedAt().toInstant(ZoneOffset.UTC), //
-                    oauth2Authorization.getRefreshTokenExpiresAt().toInstant(ZoneOffset.UTC) //
+                    oauth2Authorization.getRefreshTokenIssuedAt().toInstant(OffsetDateTime.now().getOffset()), //
+                    oauth2Authorization.getRefreshTokenExpiresAt().toInstant(OffsetDateTime.now().getOffset()) //
             );
             builder.refreshToken(refreshToken);
         }
@@ -142,8 +150,8 @@ public class MoonAuthorizationService implements OAuth2AuthorizationService {
         if (StringUtils.isNotBlank(oauth2Authorization.getAuthorizationCodeValue())) {
             final var token = new OAuth2AuthorizationCode( //
                     oauth2Authorization.getAuthorizationCodeValue(), //
-                    oauth2Authorization.getAuthorizationCodeIssuedAt().toInstant(ZoneOffset.UTC), //
-                    oauth2Authorization.getAuthorizationCodeExpiresAt().toInstant(ZoneOffset.UTC) //
+                    oauth2Authorization.getAuthorizationCodeIssuedAt().toInstant(OffsetDateTime.now().getOffset()), //
+                    oauth2Authorization.getAuthorizationCodeExpiresAt().toInstant(OffsetDateTime.now().getOffset()) //
             );
             builder.token(token);
             builder.authorizationGrantType(new AuthorizationGrantType(oauth2Authorization.getAuthorizationGrantType()));

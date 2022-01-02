@@ -1,5 +1,6 @@
 package jp.co.project.planets.moon.model.dto;
 
+import com.fasterxml.jackson.annotation.JacksonAnnotation;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

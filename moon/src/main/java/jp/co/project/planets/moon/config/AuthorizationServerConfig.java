@@ -1,25 +1,25 @@
 package jp.co.project.planets.moon.config;
 
+import com.mysql.cj.protocol.PacketSentTimeHolder;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import jp.co.project.planets.moon.helper.ConvertHelper;
 import jp.co.project.planets.moon.security.Jwks;
 import jp.co.project.planets.moon.security.oauth2.client.MoonRegisteredClientRepository;
+import jp.co.project.planets.moon.security.oauth2.server.MoonAuthorizationService;
 import jp.co.project.planets.moon.security.oauth2.server.MoonOAuth2AuthorizationConsentService;
 import jp.co.project.planets.pleiades.db.dao.OauthClientConsentDao;
+import jp.co.project.planets.pleiades.repository.OAuth2AuthorizationRepository;
 import jp.co.project.planets.pleiades.repository.OAuthClientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
-import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
-import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -46,8 +46,8 @@ public class AuthorizationServerConfig {
 //    }
 
     @Bean
-    public RegisteredClientRepository registeredClientRepository(OAuthClientRepository oauthClientRepository) {
-        return new MoonRegisteredClientRepository(oauthClientRepository);
+    public RegisteredClientRepository registeredClientRepository(OAuthClientRepository oauthClientRepository, PasswordEncoder passwordEncoder) {
+        return new MoonRegisteredClientRepository(oauthClientRepository, passwordEncoder);
     }
 
     @Bean
@@ -58,8 +58,8 @@ public class AuthorizationServerConfig {
     }
 
     @Bean
-    public OAuth2AuthorizationService authorizationService(JdbcTemplate jdbcTemplate, RegisteredClientRepository moonRegisteredClientRepository) {
-        return new JdbcOAuth2AuthorizationService(jdbcTemplate, moonRegisteredClientRepository);
+    public OAuth2AuthorizationService authorizationService(RegisteredClientRepository moonRegisteredClientRepository, OAuth2AuthorizationRepository oauth2AuthorizationRepository, ConvertHelper convertHelper) {
+        return new MoonAuthorizationService(moonRegisteredClientRepository, oauth2AuthorizationRepository, convertHelper);
     }
 
 
