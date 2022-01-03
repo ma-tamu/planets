@@ -5,9 +5,10 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.5.5"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.6.2"
         classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
         classpath "gradle.plugin.org.seasar.doma:codegen:1.4.1"
+        classpath "gradle.plugin.org.seasar.doma:compile:1.1.0"
         classpath "mysql:mysql-connector-java:8.0.25"
         classpath "org.flywaydb:flyway-gradle-plugin:7.15.0"
     }
@@ -29,6 +30,7 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'org.flywaydb.flyway'
 
+    idea.module.inheritOutputDirs = true
     group = 'jp.co.project.planets'
     version = '0.0.1-SNAPSHOT'
     sourceCompatibility = JavaVersion.VERSION_17
@@ -53,7 +55,7 @@ subprojects {
 
     dependencyManagement {
         imports {
-            mavenBom "org.springframework.boot:spring-boot-dependencies:2.5.5"
+            mavenBom "org.springframework.boot:spring-boot-dependencies:2.6.2"
             mavenBom "org.junit:junit-bom:5.8.1"
         }
     }
@@ -71,9 +73,11 @@ subprojects {
         developmentOnly 'org.springframework.boot:spring-boot-devtools'
         annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
+        implementation 'org.seasar.doma:doma:2.29.0'
+
         implementation 'org.apache.commons:commons-lang3:3.12.0'
         implementation 'org.apache.commons:commons-collections4:4.4'
-        implementation 'com.google.guava:guava:31.0-jre'
+        implementation 'com.google.guava:guava:31.0.1-jre'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'com.tngtech.archunit:archunit-junit5:0.21.0'
     }
