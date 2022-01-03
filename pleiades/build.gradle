@@ -4,9 +4,9 @@ processResources.destinationDir = compileJava.destinationDir
 compileJava.dependsOn processResources
 
 dependencies {
-    implementation 'org.flywaydb:flyway-core:8.0.1'
-    runtimeOnly 'mysql:mysql-connector-java:8.0.25'
-    implementation 'org.seasar.doma.boot:doma-spring-boot-starter:1.5.0'
+    implementation 'org.flywaydb:flyway-core:8.3.0'
+    runtimeOnly 'mysql:mysql-connector-java:8.0.27'
+    implementation 'org.seasar.doma.boot:doma-spring-boot-starter:1.6.0'
 
     implementation 'org.seasar.doma:doma:2.29.0'
     implementation 'org.seasar.doma:doma-gen:2.28.0'

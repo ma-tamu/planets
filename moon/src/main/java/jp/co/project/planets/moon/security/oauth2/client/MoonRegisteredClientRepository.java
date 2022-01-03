@@ -19,24 +19,33 @@ public class MoonRegisteredClientRepository implements RegisteredClientRepositor
     private final OAuthClientRepository oauthClientRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public MoonRegisteredClientRepository(OAuthClientRepository oauthClientRepository, PasswordEncoder passwordEncoder) {
+    /**
+     * new instances moon registered client repository
+     *
+     * @param oauthClientRepository
+     *         oauth client repository
+     * @param passwordEncoder
+     *         password encoder
+     */
+    public MoonRegisteredClientRepository(final OAuthClientRepository oauthClientRepository,
+                                          final PasswordEncoder passwordEncoder) {
         this.oauthClientRepository = oauthClientRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
 
     @Override
-    public void save(RegisteredClient registeredClient) {
+    public void save(final RegisteredClient registeredClient) {
     }
 
     @Override
-    public RegisteredClient findById(String id) {
+    public RegisteredClient findById(final String id) {
         final var oauthClientEntity = oauthClientRepository.findById(id);
         return generateRegisteredClient(oauthClientEntity);
     }
 
     @Override
-    public RegisteredClient findByClientId(String clientId) {
+    public RegisteredClient findByClientId(final String clientId) {
         final var oauthClientEntity = oauthClientRepository.findByClientId(clientId);
         return generateRegisteredClient(oauthClientEntity);
     }
@@ -54,7 +63,8 @@ public class MoonRegisteredClientRepository implements RegisteredClientRepositor
         builder.clientSecret(passwordEncoder.encode(oauthClient.secret()));
         builder.clientName(oauthClient.name());
         oauthClient.scopes().stream().map(Scope::getName).forEach(builder::scope);
-        oauthClient.grantTypes().stream().map(it -> new AuthorizationGrantType(it.getType())).forEach(builder::authorizationGrantType);
+        oauthClient.grantTypes().stream().map(it -> new AuthorizationGrantType(it.getType())) //
+                .forEach(builder::authorizationGrantType);
         builder.clientSecretExpiresAt(Instant.ofEpochSecond(28800));
         oauthClient.redirectUrls().forEach(builder::redirectUri);
         builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST);

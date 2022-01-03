@@ -21,49 +21,44 @@ public class SecurityConfig {
 
     private final LoginUserDetailService loginUserDetailService;
 
+    /**
+     * new instances security config
+     *
+     * @param loginUserDetailService
+     */
     @Autowired
-    public SecurityConfig(LoginUserDetailService loginUserDetailService) {
+    public SecurityConfig(final LoginUserDetailService loginUserDetailService) {
         this.loginUserDetailService = loginUserDetailService;
     }
 
-    //    protected void configure(HttpSecurity http) throws Exception {
-//        http.httpBasic().disable();
-//        http.authorizeRequests(expressionInterceptUrlRegistry -> expressionInterceptUrlRegistry.anyRequest()
-//                .authenticated()).formLogin(Customizer.withDefaults()).authenticationProvider(new MoonAuthenticationProvider());
-//    }
-//
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        return loginUserDetailService;
-//    }
-//
+    /**
+     * generate password encoder
+     *
+     * @return PasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
 
-    // @formatter:off
+    /**
+     * generate default security filter chain
+     *
+     * @param http
+     *         http security
+     * @return SecurityFilterChain
+     * @throws Exception
+     *         security filter chain generate failed.
+     */
     @Bean
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain defaultSecurityFilterChain(final HttpSecurity http) throws Exception {
         http.httpBasic().disable();
         final var authenticationProvider = new MoonAuthenticationProvider();
         authenticationProvider.setUserDetailsService(loginUserDetailService);
         authenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
-        http.authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated()).formLogin(Customizer.withDefaults()).authenticationProvider(authenticationProvider);
+        http.authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated()) //
+                .formLogin(Customizer.withDefaults()).authenticationProvider(authenticationProvider);
         return http.build();
     }
-    // @formatter:on
-
-    // @formatter:off
-//    @Bean
-//    UserDetailsService users() {
-//        UserDetails user = User.withDefaultPasswordEncoder()
-//                .username("user1")
-//                .password("password")
-//                .roles("USER")
-//                .build();
-//        return new InMemoryUserDetailsManager(user);
-//    }
-    // @formatter:on
 }

@@ -1,9 +1,9 @@
 package jp.co.project.planets.moon.security.oauth2.server;
 
 import jp.co.project.planets.moon.helper.ConvertHelper;
-import jp.co.project.planets.moon.utils.DateUtils;
 import jp.co.project.planets.pleiades.db.entity.Oauth2Authorization;
 import jp.co.project.planets.pleiades.repository.OAuth2AuthorizationRepository;
+import jp.co.project.planets.pleiades.util.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -22,13 +22,28 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class MoonAuthorizationService implements OAuth2AuthorizationService {
+/**
+ * moon oauth2 authorization service
+ */
+public class MoonOAuth2AuthorizationService implements OAuth2AuthorizationService {
 
     private final RegisteredClientRepository registeredClientRepository;
     private final OAuth2AuthorizationRepository oauth2AuthorizationRepository;
     private final ConvertHelper convertHelper;
 
-    public MoonAuthorizationService(RegisteredClientRepository registeredClientRepository, OAuth2AuthorizationRepository oauth2AuthorizationRepository, ConvertHelper convertHelper) {
+    /**
+     * new instances moon oauth2 authorization service.
+     *
+     * @param registeredClientRepository
+     *         RegisteredClientRepository
+     * @param oauth2AuthorizationRepository
+     *         OAuth2AuthorizationRepository
+     * @param convertHelper
+     *         ConvertHelper
+     */
+    public MoonOAuth2AuthorizationService(final RegisteredClientRepository registeredClientRepository,
+                                          final OAuth2AuthorizationRepository oauth2AuthorizationRepository,
+                                          final ConvertHelper convertHelper) {
         this.registeredClientRepository = registeredClientRepository;
         this.oauth2AuthorizationRepository = oauth2AuthorizationRepository;
         this.convertHelper = convertHelper;
@@ -36,8 +51,40 @@ public class MoonAuthorizationService implements OAuth2AuthorizationService {
 
     @Override
     @Transactional
-    public void save(OAuth2Authorization authorization) {
-        final var oauth2Authorization = new Oauth2Authorization();
+    public void save(final OAuth2Authorization authorization) {
+        if (StringUtils.isNotBlank(authorization.getId())) {
+            final var oauth2Authorization = generateOauth2Authorization(authorization);
+            oauth2AuthorizationRepository.insert(oauth2Authorization);
+        } else {
+            final var oauth2Authorization = oauth2AuthorizationRepository.findByPrimaryKey(authorization.getId());
+            final var updatedOAuth2Authorization = generateOauth2Authorization(authorization, oauth2Authorization);
+            oauth2AuthorizationRepository.update(updatedOAuth2Authorization);
+        }
+    }
+
+    /**
+     * Oauth2Authorizationを生成
+     *
+     * @param authorization
+     *         OAuth2Authorization
+     * @return Oauth2Authorization
+     */
+    private Oauth2Authorization generateOauth2Authorization(final OAuth2Authorization authorization) {
+        return generateOauth2Authorization(authorization, new Oauth2Authorization());
+    }
+
+    /**
+     * Oauth2Authorizationを生成
+     *
+     * @param authorization
+     *         OAuth2Authorization
+     * @param oauth2Authorization
+     *         Oauth2Authorization
+     * @return Oauth2Authorization
+     */
+    private Oauth2Authorization generateOauth2Authorization(final OAuth2Authorization authorization,
+                                                            final Oauth2Authorization oauth2Authorization) {
+        oauth2Authorization.setId(authorization.getId());
         oauth2Authorization.setRegisteredClientId(authorization.getRegisteredClientId());
         oauth2Authorization.setPrincipalName(authorization.getPrincipalName());
         oauth2Authorization.setAuthorizationGrantType(authorization.getAuthorizationGrantType().getValue());
@@ -46,14 +93,17 @@ public class MoonAuthorizationService implements OAuth2AuthorizationService {
             final var authorizationCodeToken = authorizationCode.getToken();
             oauth2Authorization.setAuthorizationGrantType(oauth2Authorization.getAuthorizationGrantType());
             oauth2Authorization.setAuthorizationCodeValue((authorizationCodeToken.getTokenValue()));
-            oauth2Authorization.setAuthorizationCodeExpiresAt(DateUtils.toLocalDateTime(authorizationCodeToken.getExpiresAt()));
-            oauth2Authorization.setAuthorizationCodeIssuedAt(DateUtils.toLocalDateTime(authorizationCodeToken.getIssuedAt()));
+            oauth2Authorization.setAuthorizationCodeExpiresAt(
+                    DateUtils.toLocalDateTime(authorizationCodeToken.getExpiresAt()));
+            oauth2Authorization.setAuthorizationCodeIssuedAt(
+                    DateUtils.toLocalDateTime(authorizationCodeToken.getIssuedAt()));
             final var metadataJson = convertHelper.convertObjectIntoJson(authorizationCode.getMetadata());
             oauth2Authorization.setAuthorizationCodeMetadata(metadataJson);
         }
         final var attribute = convertHelper.convertObjectIntoJson(authorization.getAttributes());
         oauth2Authorization.setAttributes(attribute);
-        Optional.ofNullable((String) authorization.getAttribute(OAuth2ParameterNames.STATE)).ifPresent(oauth2Authorization::setState);
+        Optional.ofNullable((String) authorization.getAttribute(OAuth2ParameterNames.STATE)).ifPresent(
+                oauth2Authorization::setState);
 
         final var oauth2AccessTokenToken = authorization.getToken(OAuth2AccessToken.class);
         if (Objects.nonNull(oauth2AccessTokenToken)) {
@@ -83,22 +133,23 @@ public class MoonAuthorizationService implements OAuth2AuthorizationService {
             final var metadataJson = convertHelper.convertObjectIntoJson(refreshTokenToken.getMetadata());
             oauth2Authorization.setRefreshTokenMetadata(metadataJson);
         }
-        oauth2AuthorizationRepository.insert(oauth2Authorization);
+        return oauth2Authorization;
     }
 
     @Override
-    public void remove(OAuth2Authorization authorization) {
-
+    public void remove(final OAuth2Authorization authorization) {
+        final var oauth2Authorization = oauth2AuthorizationRepository.findByPrimaryKey(authorization.getId());
+        oauth2AuthorizationRepository.delete(oauth2Authorization);
     }
 
     @Override
-    public OAuth2Authorization findById(String id) {
+    public OAuth2Authorization findById(final String id) {
         final var oauth2Authorization = oauth2AuthorizationRepository.findByPrimaryKey(id);
         return generateOAuth2Authorization(oauth2Authorization);
     }
 
     @Override
-    public OAuth2Authorization findByToken(String token, OAuth2TokenType tokenType) {
+    public OAuth2Authorization findByToken(final String token, final OAuth2TokenType tokenType) {
 
         if (Objects.isNull(tokenType)) {
             final var oauth2Authorization = oauth2AuthorizationRepository.findByUnknownToken(token);
@@ -127,7 +178,8 @@ public class MoonAuthorizationService implements OAuth2AuthorizationService {
         final var builder = OAuth2Authorization.withRegisteredClient(client);
         builder.id(oauth2Authorization.getId());
         builder.principalName(oauth2Authorization.getPrincipalName());
-        final var map = (Map<String, Object>)convertHelper.convertJsonIntoObject(oauth2Authorization.getAttributes(), Map.class);
+        final var map = (Map<String, Object>) convertHelper.convertJsonIntoObject(oauth2Authorization.getAttributes(),
+                Map.class);
         map.forEach(builder::attribute);
         if (StringUtils.isNotBlank(oauth2Authorization.getAccessTokenValue())) {
             final var oauth2AccessToken = new OAuth2AccessToken( //

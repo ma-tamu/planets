@@ -1,14 +1,13 @@
 package jp.co.project.planets.moon.config;
 
-import com.mysql.cj.protocol.PacketSentTimeHolder;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import jp.co.project.planets.moon.helper.ConvertHelper;
-import jp.co.project.planets.moon.security.Jwks;
+import jp.co.project.planets.moon.security.oauth2.Jwks;
 import jp.co.project.planets.moon.security.oauth2.client.MoonRegisteredClientRepository;
-import jp.co.project.planets.moon.security.oauth2.server.MoonAuthorizationService;
 import jp.co.project.planets.moon.security.oauth2.server.MoonOAuth2AuthorizationConsentService;
+import jp.co.project.planets.moon.security.oauth2.server.MoonOAuth2AuthorizationService;
 import jp.co.project.planets.pleiades.db.dao.OauthClientConsentDao;
 import jp.co.project.planets.pleiades.repository.OAuth2AuthorizationRepository;
 import jp.co.project.planets.pleiades.repository.OAuthClientRepository;
@@ -23,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
@@ -31,25 +31,26 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration(proxyBeanMethods = false)
 public class AuthorizationServerConfig {
 
-//    @Bean
-//    @Order(Ordered.HIGHEST_PRECEDENCE)
-//    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
-//        final var oauth2AuthorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer<HttpSecurity>();
-//        oauth2AuthorizationServerConfigurer.authorizationEndpoint(oauth2AuthorizationEndpointConfigurer -> oauth2AuthorizationEndpointConfigurer.consentPage("/oauth2/content"));
-//
-//        final var requestMatcher = oauth2AuthorizationServerConfigurer.getEndpointsMatcher();
-//        httpSecurity.requestMatcher(requestMatcher)
-//                .authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
-//                .csrf(csrf -> csrf.ignoringRequestMatchers(requestMatcher))
-//                .apply(oauth2AuthorizationServerConfigurer);
-//        return httpSecurity.formLogin(Customizer.withDefaults()).build();
-//    }
-
+    /**
+     * generate registered client repository
+     *
+     * @param oauthClientRepository
+     *         oauth client repository
+     * @param passwordEncoder
+     *         password encoder
+     * @return RegisteredClientRepository
+     */
     @Bean
-    public RegisteredClientRepository registeredClientRepository(OAuthClientRepository oauthClientRepository, PasswordEncoder passwordEncoder) {
+    public RegisteredClientRepository registeredClientRepository(final OAuthClientRepository oauthClientRepository,
+                                                                 final PasswordEncoder passwordEncoder) {
         return new MoonRegisteredClientRepository(oauthClientRepository, passwordEncoder);
     }
 
+    /**
+     * generate jwk
+     *
+     * @return JWKSource
+     */
     @Bean
     public JWKSource<SecurityContext> jwkSource() {
         final var rsaKey = Jwks.generateRsa();
@@ -57,66 +58,65 @@ public class AuthorizationServerConfig {
         return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
     }
 
+    /**
+     * generate oauth2 authorization service
+     *
+     * @param moonRegisteredClientRepository
+     *         registered client repository
+     * @param oauth2AuthorizationRepository
+     *         oauth2 authorization repository
+     * @param convertHelper
+     *         convert helper
+     * @return OAuth2AuthorizationService
+     */
     @Bean
-    public OAuth2AuthorizationService authorizationService(RegisteredClientRepository moonRegisteredClientRepository, OAuth2AuthorizationRepository oauth2AuthorizationRepository, ConvertHelper convertHelper) {
-        return new MoonAuthorizationService(moonRegisteredClientRepository, oauth2AuthorizationRepository, convertHelper);
+    public OAuth2AuthorizationService authorizationService(
+            final RegisteredClientRepository moonRegisteredClientRepository,
+            final OAuth2AuthorizationRepository oauth2AuthorizationRepository, final ConvertHelper convertHelper) {
+        return new MoonOAuth2AuthorizationService(moonRegisteredClientRepository, oauth2AuthorizationRepository,
+                convertHelper);
     }
 
 
+    /**
+     * generate oauth2 authorization consent service
+     *
+     * @param oauthClientConsentDao
+     *         oauth client consent dao
+     * @param convertHelper
+     *         convert helper
+     * @return OAuth2AuthorizationConsentService
+     */
     @Bean
-    public OAuth2AuthorizationConsentService authorizationConsentService(OauthClientConsentDao oauthClientConsentDao /*final JdbcTemplate jdbcTemplate, final RegisteredClientRepository registeredClientRepository*/) {
-        return new MoonOAuth2AuthorizationConsentService(oauthClientConsentDao);
-//        return new JdbcOAuth2AuthorizationConsentService(jdbcTemplate, registeredClientRepository);
+    public OAuth2AuthorizationConsentService authorizationConsentService(
+            final OauthClientConsentDao oauthClientConsentDao, final ConvertHelper convertHelper) {
+        return new MoonOAuth2AuthorizationConsentService(oauthClientConsentDao, convertHelper);
     }
 
+    /**
+     * generate authorization server security filter chain
+     *
+     * @param http
+     *         http security
+     * @return SecurityFilterChain
+     * @throws Exception
+     *         failed generate security filter chain.
+     */
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain authorizationServerSecurityFilterChain(final HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        return http.httpBasic().disable().formLogin(Customizer.withDefaults()).build();
+        return http.formLogin(Customizer.withDefaults()).build();
     }
 
-    // @formatter:off
-//    @Bean
-//    public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
-//        RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-//                .clientId("messaging-client")
-//                .clientSecret("{noop}secret")
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-//                .redirectUri("http://127.0.0.1:8080/login/oauth2/code/messaging-client-oidc")
-//                .redirectUri("http://127.0.0.1:8080/authorized")
-//                .redirectUri("http://127.0.0.1:8082/mars/swagger-ui/oauth2-redirect.html")
-//                .scope(OidcScopes.OPENID)
-//                .scope("message.read")
-//                .scope("message.write")
-//                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
-//                .build();
-//
-//        // Save registered client in db as if in-memory
-//        JdbcRegisteredClientRepository registeredClientRepository = new JdbcRegisteredClientRepository(jdbcTemplate);
-//        registeredClientRepository.save(registeredClient);
-//
-//        return registeredClientRepository;
-//    }
-//    // @formatter:on
-//
-//    @Bean
-//    public OAuth2AuthorizationService authorizationService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
-//        return new JdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository);
-//    }
-//
-//    @Bean
-//    public OAuth2AuthorizationConsentService authorizationConsentService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
-//        return new JdbcOAuth2AuthorizationConsentService(jdbcTemplate, registeredClientRepository);
-//    }
-//
-//    @Bean
-//    public JWKSource<SecurityContext> jwkSource() {
-//        RSAKey rsaKey = Jwks.generateRsa();
-//        JWKSet jwkSet = new JWKSet(rsaKey);
-//        return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
-//    }
+
+    /**
+     * generate provider settings
+     *
+     * @return ProviderSettings
+     */
+    @Bean
+    public ProviderSettings providerSettings() {
+        return ProviderSettings.builder().issuer("http://auth-server:9000").build();
+    }
 }

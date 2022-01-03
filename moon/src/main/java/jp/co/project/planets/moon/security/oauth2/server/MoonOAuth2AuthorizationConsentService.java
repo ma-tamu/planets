@@ -1,7 +1,6 @@
 package jp.co.project.planets.moon.security.oauth2.server;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jp.co.project.planets.moon.helper.ConvertHelper;
 import jp.co.project.planets.pleiades.db.dao.OauthClientConsentDao;
 import jp.co.project.planets.pleiades.db.entity.OauthClientConsent;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,65 +16,52 @@ import java.util.Set;
 public class MoonOAuth2AuthorizationConsentService implements OAuth2AuthorizationConsentService {
 
     private final OauthClientConsentDao oauthClientConsentDao;
+    private final ConvertHelper convertHelper;
 
     /**
      * new instance moon oauth2 authorization consent service
      *
      * @param oauthClientConsentDao
      *         OAuthクライアント承認DAO
+     * @param convertHelper
      */
-    public MoonOAuth2AuthorizationConsentService(OauthClientConsentDao oauthClientConsentDao) {
+    public MoonOAuth2AuthorizationConsentService(final OauthClientConsentDao oauthClientConsentDao, final ConvertHelper convertHelper) {
         this.oauthClientConsentDao = oauthClientConsentDao;
+        this.convertHelper = convertHelper;
     }
 
     @Override
     @Transactional
-    public void save(OAuth2AuthorizationConsent authorizationConsent) {
+    public void save(final OAuth2AuthorizationConsent authorizationConsent) {
         final var oauthClientConsent = new OauthClientConsent();
-//        oauthClientConsent.setId(EntityUtils.generateId());
-//        oauthClientConsent.setOauthClientId(authorizationConsent.getRegisteredClientId());
-//        oauthClientConsent.setUserId(authorizationConsent.getPrincipalName());
-//        oauthClientConsent.setScope(authorizationConsent.getScopes().stream().reduce((s, s2) -> s + " " + s2).get());
-//        oauthClientConsent.setCreatedBy("NULL");
-//        oauthClientConsent.setCreatedAt(LocalDateTime.now(ZoneOffset.UTC));
         oauthClientConsent.setRegisteredClientId(authorizationConsent.getRegisteredClientId());
         oauthClientConsent.setPrincipalName(authorizationConsent.getPrincipalName());
-        try {
-            final var json = new ObjectMapper().writeValueAsString(authorizationConsent.getAuthorities());
-            oauthClientConsent.setAuthorities(json);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        final var json = convertHelper.convertObjectIntoJson(authorizationConsent.getAuthorities());
+        oauthClientConsent.setAuthorities(json);
         oauthClientConsentDao.insert(oauthClientConsent);
     }
 
     @Override
     @Transactional
-    public void remove(OAuth2AuthorizationConsent authorizationConsent) {
+    public void remove(final OAuth2AuthorizationConsent authorizationConsent) {
         final var oauthClientConsentOptional = oauthClientConsentDao.selectConsentClientIdByUserId(authorizationConsent.getRegisteredClientId(), authorizationConsent.getPrincipalName());
         if (oauthClientConsentOptional.isEmpty()) {
             return;
         }
         final var oauthClientConsent = oauthClientConsentOptional.get();
-//        oauthClientConsent.setIsDeleted(true);
-//        oauthClientConsentDao.update(oauthClientConsent);
         oauthClientConsentDao.delete(oauthClientConsent);
     }
 
     @Override
-    public OAuth2AuthorizationConsent findById(String registeredClientId, String principalName) {
+    public OAuth2AuthorizationConsent findById(final String registeredClientId, final String principalName) {
         final var oauthClientConsentOptional = oauthClientConsentDao.selectConsentClientIdByUserId(registeredClientId, principalName);
         if (oauthClientConsentOptional.isEmpty()) {
             return null;
         }
         final var oauthClientConsent = oauthClientConsentOptional.get();
         final var builder = OAuth2AuthorizationConsent.withId(registeredClientId, principalName);
-        try {
-            final var set = (Set<GrantedAuthority>) new ObjectMapper().readValue(oauthClientConsent.getAuthorities(), Set.class);
-            set.forEach(builder::authority);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        final var grantedAuthoritySet = (Set<GrantedAuthority>) convertHelper.convertJsonIntoObject(oauthClientConsent.getAuthorities(), Set.class);
+        grantedAuthoritySet.forEach(builder::authority);
         return builder.build();
     }
 }
