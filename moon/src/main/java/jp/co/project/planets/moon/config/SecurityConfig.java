@@ -57,7 +57,8 @@ public class SecurityConfig {
         final var authenticationProvider = new MoonAuthenticationProvider();
         authenticationProvider.setUserDetailsService(loginUserDetailService);
         authenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
-        http.authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated()) //
+        http.authorizeRequests(authorizeRequests -> authorizeRequests.antMatchers("/oauth2/introspect", "/oauth2/jwks",
+                        "/oauth2/revoke").permitAll().anyRequest().authenticated()) //
                 .formLogin(Customizer.withDefaults()).authenticationProvider(authenticationProvider);
         return http.build();
     }

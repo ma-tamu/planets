@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
 
 import java.time.Instant;
 
@@ -18,6 +19,7 @@ public class MoonRegisteredClientRepository implements RegisteredClientRepositor
 
     private final OAuthClientRepository oauthClientRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenSettings tokenSettings;
 
     /**
      * new instances moon registered client repository
@@ -26,11 +28,15 @@ public class MoonRegisteredClientRepository implements RegisteredClientRepositor
      *         oauth client repository
      * @param passwordEncoder
      *         password encoder
+     * @param tokenSettings
+     *         token settings
      */
     public MoonRegisteredClientRepository(final OAuthClientRepository oauthClientRepository,
-                                          final PasswordEncoder passwordEncoder) {
+                                          final PasswordEncoder passwordEncoder,
+                                          final TokenSettings tokenSettings) {
         this.oauthClientRepository = oauthClientRepository;
         this.passwordEncoder = passwordEncoder;
+        this.tokenSettings = tokenSettings;
     }
 
 
@@ -68,6 +74,7 @@ public class MoonRegisteredClientRepository implements RegisteredClientRepositor
         builder.clientSecretExpiresAt(Instant.ofEpochSecond(28800));
         oauthClient.redirectUrls().forEach(builder::redirectUri);
         builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST);
+        builder.tokenSettings(tokenSettings);
         return builder.build();
     }
 }

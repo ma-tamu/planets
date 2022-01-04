@@ -11,6 +11,7 @@ import jp.co.project.planets.moon.security.oauth2.server.MoonOAuth2Authorization
 import jp.co.project.planets.pleiades.db.dao.OauthClientConsentDao;
 import jp.co.project.planets.pleiades.repository.OAuth2AuthorizationRepository;
 import jp.co.project.planets.pleiades.repository.OAuthClientRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -19,11 +20,15 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
+import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.time.Duration;
 
 /**
  * authorization server config
@@ -38,12 +43,15 @@ public class AuthorizationServerConfig {
      *         oauth client repository
      * @param passwordEncoder
      *         password encoder
+     * @param tokenSettings
+     *         token settings
      * @return RegisteredClientRepository
      */
     @Bean
     public RegisteredClientRepository registeredClientRepository(final OAuthClientRepository oauthClientRepository,
-                                                                 final PasswordEncoder passwordEncoder) {
-        return new MoonRegisteredClientRepository(oauthClientRepository, passwordEncoder);
+                                                                 final PasswordEncoder passwordEncoder,
+                                                                 final TokenSettings tokenSettings) {
+        return new MoonRegisteredClientRepository(oauthClientRepository, passwordEncoder, tokenSettings);
     }
 
     /**
@@ -118,5 +126,15 @@ public class AuthorizationServerConfig {
     @Bean
     public ProviderSettings providerSettings() {
         return ProviderSettings.builder().issuer("http://auth-server:9000").build();
+    }
+
+    @Bean
+    public TokenSettings tokenSettings(@Value("${moon.oauth2.token.expire}") final String tokenExpireSecond) {
+        final long expireSecond = Long.parseLong(tokenExpireSecond);
+        return TokenSettings.builder() //
+                .accessTokenTimeToLive(Duration.ofSeconds(expireSecond)) //
+                .idTokenSignatureAlgorithm(SignatureAlgorithm.ES256) //
+                .refreshTokenTimeToLive(Duration.ofSeconds(expireSecond)) //
+                .build();
     }
 }
