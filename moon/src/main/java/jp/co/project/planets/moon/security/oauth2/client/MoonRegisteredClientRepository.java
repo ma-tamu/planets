@@ -74,6 +74,8 @@ public class MoonRegisteredClientRepository implements RegisteredClientRepositor
         builder.clientSecretExpiresAt(Instant.ofEpochSecond(28800));
         oauthClient.redirectUrls().forEach(builder::redirectUri);
         builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST);
+        builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+        builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_JWT);
         builder.tokenSettings(tokenSettings);
         return builder.build();
     }

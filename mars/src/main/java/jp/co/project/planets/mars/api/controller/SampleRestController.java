@@ -1,8 +1,9 @@
-package jp.co.project.planets.mars.controller;
+package jp.co.project.planets.mars.api.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jp.co.project.planets.mars.service.SampleService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,7 @@ public class SampleRestController {
     }
 
     @GetMapping
-    public ResponseEntity<Map<String, String>> get() {
+    public ResponseEntity<Map<String, String>> get(@AuthenticationPrincipal final Object obj) {
         final var message = sampleService.getMessage();
         return ResponseEntity.ok(Map.of("message", message));
     }
