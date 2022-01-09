@@ -23,6 +23,13 @@ spring:
     url: ${mars.datasource.url}
     schemas: ${mars.datasource.schema}
     table: planets_version
+  security:
+    oauth2:
+      resourceserver:
+        opaquetoken:
+          client-id: 34a10a88cbc2cfab10f4262e09439efec7e76a34e1b28687f0a19d43d3e76f4d
+          client-secret: c103fb40ee6d955024b7319b29fc4ad44e8c4c4a3c160b6a6075c00b39bd1991
+          introspection-uri: ${mars.oauth2.url.base}/oauth2/introspect
 
 doma:
   dialect: mysql
@@ -32,8 +39,8 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
+    disable-swagger-default-url: true
   show-actuator: true
-
 
 mars:
   datasource:

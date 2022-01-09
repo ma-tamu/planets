@@ -3,7 +3,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    implementation 'org.springdoc:springdoc-openapi-ui:1.5.13'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.3'
+    implementation 'org.springdoc:springdoc-openapi-security:1.6.3'
+
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "com.nimbusds:oauth2-oidc-sdk:9.20"
 
     implementation project(':pleiades')
 }
