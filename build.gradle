@@ -55,7 +55,7 @@ subprojects {
 
     dependencyManagement {
         imports {
-            mavenBom "org.springframework.boot:spring-boot-dependencies:2.6.2"
+            mavenBom "org.springframework.boot:spring-boot-dependencies:2.6.6"
             mavenBom "org.junit:junit-bom:5.8.1"
         }
     }
@@ -63,7 +63,7 @@ subprojects {
         datasourceHost = System.getenv("MYSQL_HOST") ?: "localhost"
         datasourcePort = System.getenv("MYSQL_PORT") ?: "3306"
         datasourceUsername = System.getenv("MYSQL_USER_NAME") ?: "planet"
-        datasourcePassowrd = System.getenv("MYSQL_USER_PASSWORD") ?: "planet"
+        datasourcePassowrd = System.getenv("MYSQL_PASSWORD") ?: "planet"
         datasourceSchema = System.getenv("MYSQL_SCHEMA") ?: "planet"
         datasourceUrl = "jdbc:mysql://$datasourceHost:$datasourcePort/$datasourceSchema?useSSL=false&allowPublicKeyRetrieval=true"
     }

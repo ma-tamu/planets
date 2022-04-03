@@ -45,7 +45,33 @@ public class UserDetailDto implements UserDetails {
     /** パーミッションリスト */
     private final List<PermissionEnum> permissionList;
 
-    public UserDetailDto(String id, String loginId, String name, String gender, String mail, String password, boolean lockout, boolean deleted, Office office, List<PermissionEnum> permissionList) {
+    /**
+     * new instance user detail dto
+     *
+     * @param id
+     *         ユーザーID
+     * @param loginId
+     *         ログインID
+     * @param name
+     *         ユーザー名
+     * @param gender
+     *         性別
+     * @param mail
+     *         メールアドレス
+     * @param password
+     *         パスワード
+     * @param lockout
+     *         ロックアウト
+     * @param deleted
+     *         削除フラグ
+     * @param office
+     *         オフィス
+     * @param permissionList
+     *         パーミッションリスト
+     */
+    public UserDetailDto(final String id, final String loginId, final String name, final String gender,
+                         final String mail, final String password, final boolean lockout, final boolean deleted,
+                         final Office office, final List<PermissionEnum> permissionList) {
         this.id = id;
         this.loginId = loginId;
         this.name = name;
@@ -75,7 +101,7 @@ public class UserDetailDto implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
@@ -85,7 +111,7 @@ public class UserDetailDto implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
