@@ -5,7 +5,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.6.2"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.6.6"
         classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
         classpath "gradle.plugin.org.seasar.doma:codegen:1.4.1"
         classpath "gradle.plugin.org.seasar.doma:compile:1.1.0"
@@ -79,7 +79,7 @@ subprojects {
         implementation 'org.apache.commons:commons-collections4:4.4'
         implementation 'com.google.guava:guava:31.0.1-jre'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
-        testImplementation 'com.tngtech.archunit:archunit-junit5:0.21.0'
+        testImplementation 'com.tngtech.archunit:archunit-junit5:0.23.1'
     }
 
     test {

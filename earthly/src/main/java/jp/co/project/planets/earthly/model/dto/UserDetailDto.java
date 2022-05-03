@@ -1,7 +1,7 @@
 package jp.co.project.planets.earthly.model.dto;
 
 import jp.co.project.planets.earthly.emuns.PermissionEnum;
-import jp.co.project.planets.pleiades.db.entity.Office;
+import jp.co.project.planets.pleiades.model.entity.CompanyEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -39,8 +39,8 @@ public class UserDetailDto implements UserDetails {
     /** 削除フラグ */
     private final boolean deleted;
 
-    /** オフィス */
-    private final Office office;
+    /** 会社 */
+    private final CompanyEntity company;
 
     /** パーミッションリスト */
     private final List<PermissionEnum> permissionList;
@@ -64,14 +64,14 @@ public class UserDetailDto implements UserDetails {
      *         ロックアウト
      * @param deleted
      *         削除フラグ
-     * @param office
-     *         オフィス
+     * @param company
+     *         会社
      * @param permissionList
      *         パーミッションリスト
      */
     public UserDetailDto(final String id, final String loginId, final String name, final String gender,
                          final String mail, final String password, final boolean lockout, final boolean deleted,
-                         final Office office, final List<PermissionEnum> permissionList) {
+                         final CompanyEntity company, final List<PermissionEnum> permissionList) {
         this.id = id;
         this.loginId = loginId;
         this.name = name;
@@ -80,7 +80,7 @@ public class UserDetailDto implements UserDetails {
         this.password = password;
         this.lockout = lockout;
         this.deleted = deleted;
-        this.office = office;
+        this.company = company;
         this.permissionList = permissionList;
     }
 
@@ -147,8 +147,8 @@ public class UserDetailDto implements UserDetails {
         return deleted;
     }
 
-    public Office getOffice() {
-        return office;
+    public CompanyEntity getCompany() {
+        return company;
     }
 
     public List<PermissionEnum> getPermissionList() {

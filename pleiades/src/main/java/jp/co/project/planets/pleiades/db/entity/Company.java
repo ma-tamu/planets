@@ -8,11 +8,11 @@ import org.seasar.doma.Metamodel;
 import org.seasar.doma.Table;
 
 /**
- * ユーザー
+ * 会社
  */
-@Entity(listener = UserListener.class )
-@Table(name = "user")
-public class User extends AbstractUser implements java.io.Serializable {
+@Entity(listener = CompanyListener.class )
+@Table(name = "company")
+public class Company extends AbstractCompany implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -21,33 +21,13 @@ public class User extends AbstractUser implements java.io.Serializable {
     @Column(name = "id")
     String id;
 
-    /** ログインID */
-    @Column(name = "login_id")
-    String loginId;
-
-    /** ユーザー名 */
+    /** 名前 */
     @Column(name = "name")
     String name;
 
-    /** 性別 */
-    @Column(name = "gender")
-    String gender;
-
-    /** メールアドレス */
-    @Column(name = "mail")
-    String mail;
-
-    /** パスワード */
-    @Column(name = "password")
-    String password;
-
-    /** ロックアウト */
-    @Column(name = "lockout")
-    Boolean lockout;
-
-    /** 所属オフィス */
-    @Column(name = "company_id")
-    String companyId;
+    /** 所属国 */
+    @Column(name = "country_id")
+    String countryId;
 
     /** 作成日 */
     @Column(name = "created_at")
@@ -88,24 +68,6 @@ public class User extends AbstractUser implements java.io.Serializable {
     }
 
     /** 
-     * Returns the loginId.
-     * 
-     * @return the loginId
-     */
-    public String getLoginId() {
-        return loginId;
-    }
-
-    /** 
-     * Sets the loginId.
-     * 
-     * @param loginId the loginId
-     */
-    public void setLoginId(String loginId) {
-        this.loginId = loginId;
-    }
-
-    /** 
      * Returns the name.
      * 
      * @return the name
@@ -124,93 +86,21 @@ public class User extends AbstractUser implements java.io.Serializable {
     }
 
     /** 
-     * Returns the gender.
+     * Returns the countryId.
      * 
-     * @return the gender
+     * @return the countryId
      */
-    public String getGender() {
-        return gender;
+    public String getCountryId() {
+        return countryId;
     }
 
     /** 
-     * Sets the gender.
+     * Sets the countryId.
      * 
-     * @param gender the gender
+     * @param countryId the countryId
      */
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    /** 
-     * Returns the mail.
-     * 
-     * @return the mail
-     */
-    public String getMail() {
-        return mail;
-    }
-
-    /** 
-     * Sets the mail.
-     * 
-     * @param mail the mail
-     */
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
-    /** 
-     * Returns the password.
-     * 
-     * @return the password
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /** 
-     * Sets the password.
-     * 
-     * @param password the password
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    /** 
-     * Returns the lockout.
-     * 
-     * @return the lockout
-     */
-    public Boolean getLockout() {
-        return lockout;
-    }
-
-    /** 
-     * Sets the lockout.
-     * 
-     * @param lockout the lockout
-     */
-    public void setLockout(Boolean lockout) {
-        this.lockout = lockout;
-    }
-
-    /** 
-     * Returns the companyId.
-     * 
-     * @return the companyId
-     */
-    public String getCompanyId() {
-        return companyId;
-    }
-
-    /** 
-     * Sets the companyId.
-     * 
-     * @param companyId the companyId
-     */
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
+    public void setCountryId(String countryId) {
+        this.countryId = countryId;
     }
 
     /** 
