@@ -1,7 +1,7 @@
 package jp.co.project.planets.pleiades.repository;
 
 import jp.co.project.planets.pleiades.db.dao.UserDao;
-import jp.co.project.planets.pleiades.model.entity.UserEntity;
+import jp.co.project.planets.pleiades.db.entity.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -31,7 +31,7 @@ public class UserRepository {
      *         user id
      * @return User
      */
-    public Optional<UserEntity> findByPrimaryKey(final String id) {
-        return userDao.selectById(id);
+    public Optional<User> findByPrimaryKey(final String id) {
+        return Optional.ofNullable(userDao.selectById(id));
     }
 }

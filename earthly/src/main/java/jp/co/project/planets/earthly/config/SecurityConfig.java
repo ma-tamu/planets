@@ -1,10 +1,12 @@
 package jp.co.project.planets.earthly.config;
 
+import jp.co.project.planets.earthly.security.EarthlyAuthenticationProvider;
 import jp.co.project.planets.earthly.security.EarthlyUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic().disable();
 
         http.authorizeRequests() //
-                .antMatchers("/css/**", "/js/**", "/img/**", "/vendor/**").permitAll().anyRequest() //
+                .antMatchers("/css/**", "/js/**", "/vendor/**").permitAll().anyRequest() //
                 .authenticated().and() //
                 .formLogin() //
                 .loginPage("/login") //
@@ -47,12 +49,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(earthlyUserDetailsService).passwordEncoder(passwordEncoder());
+    public void configure(final WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/**");
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider(final PasswordEncoder passwordEncoder) {
+        final var authenticationProvider = new EarthlyAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(earthlyUserDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+        return authenticationProvider;
     }
 }

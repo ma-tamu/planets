@@ -5,6 +5,8 @@ server:
         http-only: true
         secure: true
     context-path: /earthly
+  ssl:
+    enabled: false
 
 logging:
   level:
@@ -13,7 +15,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     name: ${earthly.datasource.name}
-    password: ${earthly.datasource.passowrd}
+    password: ${earthly.datasource.password}
     url: ${earthly.datasource.url}
     hikari:
       auto-commit: false
@@ -22,26 +24,27 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
       jdbc-url: ${earthly.datasource.url}
       username: ${earthly.datasource.name}
-      password: ${earthly.datasource.passowrd}
+      password: ${earthly.datasource.password}
   messages:
     basename: i18n/messages
     encoding: UTF-8
   flyway:
     driver-class-name: com.mysql.cj.jdbc.Driver
     user: ${earthly.datasource.name}
-    password: ${earthly.datasource.passowrd}
+    password: ${earthly.datasource.password}
     url: ${earthly.datasource.url}
     schemas: ${earthly.datasource.schema}
     table: planets_version
   thymeleaf:
     cache: false
-
+  mvc:
+    static-path-pattern: /**
 
 earthly:
   datasource:
     host: ${MYSQL_HOST:localhost}
     port: ${MYSQL_PORT:3306}
     name: ${MYSQL_USER_NAME:planet}
-    passowrd: ${MYSQL_PASSWORD:planet}
+    password: ${MYSQL_PASSWORD:planet}
     schema: ${MYSQL_SCHEMA:planet}
     url: jdbc:mysql://${earthly.datasource.host}:${earthly.datasource.port}/${earthly.datasource.schema}?allowPublicKeyRetrieval=true&useSSL=false

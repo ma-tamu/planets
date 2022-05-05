@@ -1,5 +1,7 @@
 package jp.co.project.planets.pleiades.model.entity;
 
+import jp.co.project.planets.pleiades.enums.GenderEnum;
+
 /**
  * user entity
  *
@@ -18,6 +20,6 @@ package jp.co.project.planets.pleiades.model.entity;
  * @param lockout
  *         lockout
  */
-public record UserEntity(String id, String loginId, String name, String mail, String gender, CompanyEntity company,
+public record UserEntity(String id, String loginId, String name, String mail, GenderEnum gender, CompanyEntity company,
                          boolean lockout) {
 }

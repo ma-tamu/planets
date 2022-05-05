@@ -1,5 +1,7 @@
 package jp.co.project.planets.pleiades.model.entity;
 
+import java.io.Serializable;
+
 /**
  * company entity
  *
@@ -10,5 +12,5 @@ package jp.co.project.planets.pleiades.model.entity;
  * @param country
  *         country
  */
-public record CompanyEntity(String id, String name, CountryEntity country) {
+public record CompanyEntity(String id, String name, CountryEntity country) implements Serializable {
 }

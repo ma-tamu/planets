@@ -50,6 +50,6 @@ public class EarthlyUserDetailsService implements UserDetailsService {
         final var company = companyRepository.findByPrimaryKey(user.getCompanyId());
 
         return new UserDetailDto(user.getId(), user.getLoginId(), user.getName(), user.getGender(), user.getMail(),
-                user.getPassword(), user.getLockout(), user.getIsDeleted(), company, permissionEnumList);
+                user.getPassword(), company, permissionEnumList);
     }
 }
